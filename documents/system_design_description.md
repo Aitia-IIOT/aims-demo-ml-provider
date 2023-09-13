@@ -14,7 +14,7 @@ Worker thread:
 
 API:
 
-- Implements the fetch-detection service using the database
+- Implements the `fetch-detections` service using the database
 
 **Database**
 
@@ -22,9 +22,9 @@ In memory H2 database:
 
 Detection table:
 
-	- id (bigint)
-	- timestamp (bigint)
-	- location (varchar)
+- id (bigint)
+- timestamp (bigint)
+- location (varchar)
 
 **Application properties**
 
