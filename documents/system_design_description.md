@@ -33,3 +33,4 @@ confidence_threshold: 80<br />
 read_interval: 1000<br />
 input_path_prefix: /tmp/aims-demo/input<br />
 working_path_prefix: /tmp/aims-demo/working<br />
+processing_tool_path: /tmp/aims-demo/image-processing.py<br />
