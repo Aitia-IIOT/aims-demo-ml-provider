@@ -11,17 +11,27 @@ Returns all the positive detection what were found from a specified start time.
 
 Where timestamp is an epoch timestamp. (Number representation of the seconds passed from 1970.01.01 00:00 UTC)
 
-**Output:** JSON
+**Output:** HTTP response 
 
-content-type: application/json
+Status Code:
+```
+200 (OK), 400 (Bad request), 401 (Not authorized), 500 (Internal server error)
+```
 
-Body:
+Headers:
+```
+Content-Type: application/json
+```
+
+
+Payload:
 ```
 [
   {
     "timestamp": number,
     "location": string,
-  }
+  },
+  ...
 ]
 ```
 
