@@ -26,7 +26,7 @@
   },
   {
     "name": "locations",
-    "type": "java.lang.String",
+    "type": "java.lang.Array",
     "description": "A description for 'locations'"
   },
   {
