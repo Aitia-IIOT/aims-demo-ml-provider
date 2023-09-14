@@ -1,6 +1,9 @@
 package eu.arrowhead.application.skeleton.provider;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -15,6 +18,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
+import ai.aitia.aims.config.AppConfig;
+import ai.aitia.aims.worker.ImageProcessingWorker;
 import ai.aitia.arrowhead.application.library.ArrowheadService;
 import ai.aitia.arrowhead.application.library.config.ApplicationInitListener;
 import ai.aitia.arrowhead.application.library.util.ApplicationCommonConstants;
@@ -42,6 +47,12 @@ public class ProviderApplicationInitListener extends ApplicationInitListener {
 	@Value(CommonConstants.$SERVER_SSL_ENABLED_WD)
 	private boolean sslEnabled;
 	
+	@Autowired
+	private AppConfig config;
+	
+	@Autowired
+	private ImageProcessingWorker worker;
+	
 	private final Logger logger = LogManager.getLogger(ProviderApplicationInitListener.class);
 	
 	//=================================================================================================
@@ -66,13 +77,16 @@ public class ProviderApplicationInitListener extends ApplicationInitListener {
 			logger.info("TokenSecurityFilter in not active");
 		}		
 		
-		//TODO: implement here any custom behavior on application start up
+		validateProcessingToolPath();
+		prepareImageFolders();
+		worker.start();
+		config.setInitialized(true);
 	}
 	
 	//-------------------------------------------------------------------------------------------------
 	@Override
 	public void customDestroy() {
-		//TODO: implement here any custom behavior on application shout down
+		worker.interrupt();
 	}
 	
 	//=================================================================================================
@@ -106,4 +120,69 @@ public class ProviderApplicationInitListener extends ApplicationInitListener {
 		providerSecurityConfig.getTokenSecurityFilter().setMyPrivateKey(providerPrivateKey);
 
 	}
+	
+	//-------------------------------------------------------------------------------------------------
+	private void prepareImageFolders()  {
+		if (config.getInputFolderPrefix() == null || config.getInputFolderPrefix().isBlank()) {
+			throw new RuntimeException("input_path_prefix is not configured");
+		}
+		if (config.getWorkingFolderPrefix() == null || config.getWorkingFolderPrefix().isBlank()) {
+			throw new RuntimeException("working_path_prefix is not configured");
+		}
+		
+		
+		try {
+			final File inputFolder = new File(new URI(config.getInputFolderPrefix()));
+			if (!inputFolder.exists()) {
+				if (!inputFolder.mkdirs()) {
+					throw new RuntimeException("Could not create folder: " + config.getInputFolderPrefix());
+				}
+			}
+			if (!inputFolder.canRead()) {
+				throw new RuntimeException("Have no rights to read folder: " + config.getInputFolderPrefix());
+			}
+			if (!inputFolder.canWrite()) {
+				throw new RuntimeException("Have no rights to write folder: " + config.getInputFolderPrefix());
+			}
+		} catch (URISyntaxException ex) {
+			throw new RuntimeException("input_path_prefix syntax error: " + ex.getMessage());
+		}
+		
+		try {
+			final File workingFolder = new File(new URI(config.getWorkingFolderPrefix()));
+			if (!workingFolder.exists()) {
+				if (!workingFolder.mkdirs()) {
+					throw new RuntimeException("Could not create folder: " + config.getWorkingFolderPrefix());
+				}
+			}
+			if (!workingFolder.canRead()) {
+				throw new RuntimeException("Have no rights to read folder: " + config.getWorkingFolderPrefix());
+			}
+			if (!workingFolder.canWrite()) {
+				throw new RuntimeException("Have no rights to write folder: " + config.getWorkingFolderPrefix());
+			}
+		} catch (URISyntaxException ex) {
+			throw new RuntimeException("working_path_prefix syntax error: " + ex.getMessage());
+		}
+	}
+	
+	//-------------------------------------------------------------------------------------------------
+	private void validateProcessingToolPath()  {
+		if (config.getProcessingToolPath() == null || config.getProcessingToolPath().isBlank()) {
+			throw new RuntimeException("processing_tool_path is not configured");
+		}
+		
+		try {
+			final File processingTool = new File(new URI(config.getProcessingToolPath()));
+			if (!processingTool.exists()) {
+				throw new RuntimeException("processing_tool_path not exists: " + config.getProcessingToolPath());
+			}
+			if (!processingTool.canExecute()) {
+				throw new RuntimeException("Have no rights to execute: " + config.getProcessingToolPath());
+			}
+		} catch (URISyntaxException ex) {
+			throw new RuntimeException("processing_tool_path syntax error: " + ex.getMessage());
+		}
+	}
+	
 }
