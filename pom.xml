@@ -11,7 +11,7 @@
 	<groupId>ai.aitia</groupId>	
 	<artifactId>aims-demo-ml-provider</artifactId>
 	<version>1.0</version>
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
 	<name>AIMS ML provider demo</name>
 	
 	
@@ -70,4 +70,5 @@
 	        	</executions>
 	      	</plugin>
   		</plugins>
+	</build>
 </project>
