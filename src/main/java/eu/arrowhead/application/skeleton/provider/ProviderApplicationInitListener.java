@@ -2,8 +2,7 @@ package eu.arrowhead.application.skeleton.provider;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.nio.file.InvalidPathException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -132,7 +131,7 @@ public class ProviderApplicationInitListener extends ApplicationInitListener {
 		
 		
 		try {
-			final File inputFolder = new File(new URI(config.getInputFolderPrefix()));
+			final File inputFolder = new File(config.getInputFolderPrefix());
 			if (!inputFolder.exists()) {
 				if (!inputFolder.mkdirs()) {
 					throw new RuntimeException("Could not create folder: " + config.getInputFolderPrefix());
@@ -144,12 +143,12 @@ public class ProviderApplicationInitListener extends ApplicationInitListener {
 			if (!inputFolder.canWrite()) {
 				throw new RuntimeException("Have no rights to write folder: " + config.getInputFolderPrefix());
 			}
-		} catch (URISyntaxException ex) {
+		} catch (InvalidPathException ex) {
 			throw new RuntimeException("input_path_prefix syntax error: " + ex.getMessage());
 		}
 		
 		try {
-			final File workingFolder = new File(new URI(config.getWorkingFolderPrefix()));
+			final File workingFolder = new File(config.getWorkingFolderPrefix());
 			if (!workingFolder.exists()) {
 				if (!workingFolder.mkdirs()) {
 					throw new RuntimeException("Could not create folder: " + config.getWorkingFolderPrefix());
@@ -161,7 +160,7 @@ public class ProviderApplicationInitListener extends ApplicationInitListener {
 			if (!workingFolder.canWrite()) {
 				throw new RuntimeException("Have no rights to write folder: " + config.getWorkingFolderPrefix());
 			}
-		} catch (URISyntaxException ex) {
+		} catch (InvalidPathException ex) {
 			throw new RuntimeException("working_path_prefix syntax error: " + ex.getMessage());
 		}
 	}
@@ -173,14 +172,14 @@ public class ProviderApplicationInitListener extends ApplicationInitListener {
 		}
 		
 		try {
-			final File processingTool = new File(new URI(config.getProcessingToolPath()));
+			final File processingTool = new File(config.getProcessingToolPath());
 			if (!processingTool.exists()) {
 				throw new RuntimeException("processing_tool_path not exists: " + config.getProcessingToolPath());
 			}
 			if (!processingTool.canExecute()) {
 				throw new RuntimeException("Have no rights to execute: " + config.getProcessingToolPath());
 			}
-		} catch (URISyntaxException ex) {
+		} catch (InvalidPathException ex) {
 			throw new RuntimeException("processing_tool_path syntax error: " + ex.getMessage());
 		}
 	}
