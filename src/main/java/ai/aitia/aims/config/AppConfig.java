@@ -17,8 +17,12 @@ public class AppConfig {
 	@Value("${working_path_prefix}")
 	private String workingFolderPrefix;
 	
+
 	@Value("${processing_tool_path}")
 	private String processingToolPath;
+	
+	@Value("${read_interval:1000}")
+	private int readInterval;
 	
 	//=================================================================================================
 	// methods
@@ -27,7 +31,7 @@ public class AppConfig {
 	public String getInputFolderPrefix() { return inputFolderPrefix; }
 	public String getWorkingFolderPrefix() { return workingFolderPrefix; }
 	public String getProcessingToolPath() { return processingToolPath; }
-	
+	public int getReadInterval() { return readInterval; }	
 	public void setInitialized(final boolean initialized) { this.initialized = initialized; }
 
 }
