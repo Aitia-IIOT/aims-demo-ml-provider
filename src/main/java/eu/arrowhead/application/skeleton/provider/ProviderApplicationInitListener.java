@@ -3,6 +3,7 @@ package eu.arrowhead.application.skeleton.provider;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -78,6 +79,7 @@ public class ProviderApplicationInitListener extends ApplicationInitListener {
 		
 		validateProcessingToolPath();
 		prepareImageFolders();
+		prepareLocationFolders();
 		worker.start();
 		config.setInitialized(true);
 	}
@@ -162,6 +164,30 @@ public class ProviderApplicationInitListener extends ApplicationInitListener {
 			}
 		} catch (InvalidPathException ex) {
 			throw new RuntimeException("working_path_prefix syntax error: " + ex.getMessage());
+		}
+	}
+	
+	//-------------------------------------------------------------------------------------------------
+	private void prepareLocationFolders() {
+		final File inputFolder = new File(config.getInputFolderPrefix());
+		final File workingFolder = new File(config.getWorkingFolderPrefix());
+		if (!inputFolder.exists() || !workingFolder.exists()) {
+			throw new RuntimeException("Cannot create location folders, because image folders haven't been prepared yet.");
+		}
+		
+		for (String location : config.getLocations()) {
+			final File inputLocationFolder = Path.of(config.getInputFolderPrefix(), location).toFile();
+			final File workingLocationFolder = Path.of(config.getWorkingFolderPrefix(), location).toFile();
+			if (!inputLocationFolder.exists()) {
+				if (!inputLocationFolder.mkdirs()) {
+					throw new RuntimeException("Could not create folder: " + inputLocationFolder);
+				}
+			}
+			if (!workingLocationFolder.exists()) {
+				if (!workingLocationFolder.mkdirs()) {
+					throw new RuntimeException("Could not create folder: " + inputLocationFolder);
+				}
+			}
 		}
 	}
 	

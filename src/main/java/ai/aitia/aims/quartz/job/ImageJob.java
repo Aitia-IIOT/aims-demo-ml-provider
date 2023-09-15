@@ -50,9 +50,10 @@ public class ImageJob implements Job {
 				final File[] imgFiles = inputfolder.listFiles();
 				for (final File img : imgFiles) {
 					logger.debug("File found in {}: {}", location, img.getName());
+					final String extension = img.getAbsolutePath().substring(img.getAbsolutePath().lastIndexOf('.'));
 					final Path workingFolderPath = Path.of(config.getWorkingFolderPrefix(), location);
 					createFolderIfNotExists(workingFolderPath);
-					final Path renamedImg = Path.of(workingFolderPath.toString(), String.valueOf(System.currentTimeMillis()));
+					final Path renamedImg = Path.of(workingFolderPath.toString(), String.valueOf(System.currentTimeMillis()) + extension);
 					try {
 						Files.move(Path.of(img.getAbsolutePath()), renamedImg, StandardCopyOption.REPLACE_EXISTING);
 						logger.debug("File moved: {}" + renamedImg.toString());
