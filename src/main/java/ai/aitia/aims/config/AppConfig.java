@@ -23,6 +23,9 @@ public class AppConfig {
 	@Value("${read_interval:1000}")
 	private int readInterval;
 	
+	@Value("${confidence_threshold:80}")
+	private int confidenceThreshold;
+	
 	@Value("${locations}")
 	private String[] locations;
 	
@@ -34,7 +37,7 @@ public class AppConfig {
 	public String getWorkingFolderPrefix() { return workingFolderPrefix; }
 	public String getProcessingToolPath() { return processingToolPath; }
 	public int getReadInterval() { return readInterval; }	
+	public int getConfidenceThreshold() { return confidenceThreshold; }
 	public String[] getLocations() { return locations; }
 	public void setInitialized(final boolean initialized) { this.initialized = initialized; }
-
 }
