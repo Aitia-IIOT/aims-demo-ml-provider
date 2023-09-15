@@ -10,12 +10,16 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.CertificateException;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
 import ai.aitia.aims.config.AppConfig;
@@ -27,6 +31,9 @@ import eu.arrowhead.application.skeleton.provider.security.ProviderSecurityConfi
 import eu.arrowhead.common.CommonConstants;
 import eu.arrowhead.common.Utilities;
 import eu.arrowhead.common.core.CoreSystem;
+import eu.arrowhead.common.dto.shared.ServiceRegistryRequestDTO;
+import eu.arrowhead.common.dto.shared.ServiceSecurityType;
+import eu.arrowhead.common.dto.shared.SystemRequestDTO;
 import eu.arrowhead.common.exception.ArrowheadException;
 
 @Component
@@ -46,6 +53,15 @@ public class ProviderApplicationInitListener extends ApplicationInitListener {
 	
 	@Value(CommonConstants.$SERVER_SSL_ENABLED_WD)
 	private boolean sslEnabled;
+	
+	@Value(ApplicationCommonConstants.$APPLICATION_SYSTEM_NAME)
+	private String mySystemName;
+	
+	@Value(ApplicationCommonConstants.$APPLICATION_SERVER_ADDRESS_WD)
+	private String mySystemAddress;
+	
+	@Value(ApplicationCommonConstants.$APPLICATION_SERVER_PORT_WD)
+	private int mySystemPort;
 	
 	@Autowired
 	private AppConfig config;
@@ -80,6 +96,7 @@ public class ProviderApplicationInitListener extends ApplicationInitListener {
 		validateProcessingToolPath();
 		prepareImageFolders();
 		prepareLocationFolders();
+		arrowheadService.forceRegisterServiceToServiceRegistry(createServiceRegistryRequest(mySystemName, "/ml-provider/detections", HttpMethod.GET));
 		worker.start();
 		config.setInitialized(true);
 	}
@@ -208,6 +225,34 @@ public class ProviderApplicationInitListener extends ApplicationInitListener {
 		} catch (InvalidPathException ex) {
 			throw new RuntimeException("processing_tool_path syntax error: " + ex.getMessage());
 		}
+	}
+	
+	//-------------------------------------------------------------------------------------------------
+	private ServiceRegistryRequestDTO createServiceRegistryRequest(final String serviceDefinition, final String serviceUri, final HttpMethod httpMethod) {
+		final ServiceRegistryRequestDTO serviceRegistryRequest = new ServiceRegistryRequestDTO();
+		serviceRegistryRequest.setServiceDefinition(serviceDefinition);
+		final SystemRequestDTO systemRequest = new SystemRequestDTO();
+		systemRequest.setSystemName(mySystemName);
+		systemRequest.setAddress(mySystemAddress);
+		systemRequest.setPort(mySystemPort);		
+
+		if (sslEnabled && tokenSecurityFilterEnabled) {
+			systemRequest.setAuthenticationInfo(Base64.getEncoder().encodeToString(arrowheadService.getMyPublicKey().getEncoded()));
+			serviceRegistryRequest.setSecure(ServiceSecurityType.TOKEN.name());
+			serviceRegistryRequest.setInterfaces(List.of("HTTP-SECURE-JSON"));
+		} else if (sslEnabled) {
+			systemRequest.setAuthenticationInfo(Base64.getEncoder().encodeToString(arrowheadService.getMyPublicKey().getEncoded()));
+			serviceRegistryRequest.setSecure(ServiceSecurityType.CERTIFICATE.name());
+			serviceRegistryRequest.setInterfaces(List.of("HTTP-SECURE-JSON"));
+		} else {
+			serviceRegistryRequest.setSecure(ServiceSecurityType.NOT_SECURE.name());
+			serviceRegistryRequest.setInterfaces(List.of("HTTP-INSECURE-JSON"));
+		}
+		serviceRegistryRequest.setProviderSystem(systemRequest);
+		serviceRegistryRequest.setServiceUri(serviceUri);
+		serviceRegistryRequest.setMetadata(new HashMap<>());
+		serviceRegistryRequest.getMetadata().put("http-method", httpMethod.name());
+		return serviceRegistryRequest;
 	}
 	
 }
