@@ -85,6 +85,7 @@ public class ImageProcessingWorker extends Thread {
 	    // read the output from the command
 		String line = null;
 	    while ((line = stdOut.readLine()) != null) {
+	    	System.out.println(line);
 	    	output.add(line);
 	    }
 	            

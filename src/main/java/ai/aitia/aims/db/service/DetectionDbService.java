@@ -27,8 +27,8 @@ public class DetectionDbService {
 	//-------------------------------------------------------------------------------------------------
 	public List<DetectionDTO> getDetectionsFrom(final long timestamp) {
 		try {
-			final List<Detection> records = detectionRepository.findByTimestampGreaterThan(timestamp);
-			return records.stream().map(r -> new DetectionDTO(r.getTimestamp(), r.getLocation())).collect(Collectors.toList()); 
+			final List<Detection> records = detectionRepository.findByTimestampGreaterThan(timestamp * 1000);
+			return records.stream().map(r -> new DetectionDTO(r.getTimestamp() / 1000, r.getLocation())).collect(Collectors.toList()); 
 		} catch (final Exception e) {
 			System.err.println(e.getMessage());
 			e.printStackTrace();
