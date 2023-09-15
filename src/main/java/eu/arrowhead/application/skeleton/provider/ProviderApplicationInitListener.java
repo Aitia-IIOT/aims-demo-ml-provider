@@ -96,7 +96,7 @@ public class ProviderApplicationInitListener extends ApplicationInitListener {
 		validateProcessingToolPath();
 		prepareImageFolders();
 		prepareLocationFolders();
-		arrowheadService.forceRegisterServiceToServiceRegistry(createServiceRegistryRequest(mySystemName, "/ml-provider/detections", HttpMethod.GET));
+		arrowheadService.forceRegisterServiceToServiceRegistry(createServiceRegistryRequest("fetch-detections", "/ml-provider/detections", HttpMethod.GET));
 		worker.start();
 		config.setInitialized(true);
 	}
