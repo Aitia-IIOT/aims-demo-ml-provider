@@ -10,7 +10,7 @@
 	
 	<groupId>ai.aitia</groupId>	
 	<artifactId>aims-demo-ml-provider</artifactId>
-	<version>1.0</version>
+	<version>0.1</version>
 	<packaging>jar</packaging>
 	<name>AIMS ML provider demo</name>
 	
