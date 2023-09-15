@@ -7,6 +7,8 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.concurrent.BlockingQueue;
 
+import javax.annotation.Resource;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.quartz.DisallowConcurrentExecution;
@@ -29,7 +31,7 @@ public class ImageJob implements Job {
 	@Autowired
 	private AppConfig config;
 	
-	@Autowired
+	@Resource(name = "processingQueue")
 	private BlockingQueue<String> processingJobQueue;
 
 	private final Logger logger = LogManager.getLogger(QuartzConfig.class);

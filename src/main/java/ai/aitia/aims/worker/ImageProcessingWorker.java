@@ -11,9 +11,9 @@ import java.util.concurrent.BlockingQueue;
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import ai.aitia.aims.config.AppConfig;
 import ai.aitia.aims.db.service.DetectionDbService;
 
 @Component
@@ -28,11 +28,8 @@ public class ImageProcessingWorker extends Thread {
 	@Resource(name = "processingQueue")
 	private BlockingQueue<String> processingQueue;
 	
-	@Value("${confidence_threshold}")
-	private int confidenceThreshold;
-	
-	@Value("${processing_tool_path}")
-	private String processingToolPath;
+	@Autowired
+	private AppConfig config;
 	
 	private boolean doWork = false;
 	
@@ -75,7 +72,10 @@ public class ImageProcessingWorker extends Thread {
 	
 	//-------------------------------------------------------------------------------------------------
 	private void handleImageProcessing(final String path) throws IOException, InterruptedException {
-		final Process process = Runtime.getRuntime().exec(processingToolPath + " " + path);
+		final File dir = new File(config.getProcessingToolPath()).getParentFile();
+		final ProcessBuilder builder = new ProcessBuilder(config.getProcessingToolPath(), path);
+		builder.directory(dir);
+		final Process process = builder.start();
 		
 		final BufferedReader stdOut = new BufferedReader(new InputStreamReader(process.getInputStream()));
 		final BufferedReader stdError = new BufferedReader(new InputStreamReader(process.getErrorStream()));
@@ -108,7 +108,7 @@ public class ImageProcessingWorker extends Thread {
 		if (output.size() > 0 && output.get(0).trim().toLowerCase().startsWith("y")) {
 			final String[] parts = output.get(0).trim().split(" ");
 			final int confidence = Integer.parseInt(parts[1]);
-			if (confidence > confidenceThreshold) {
+			if (confidence > config.getConfidenceThreshold()) {
 				final File file = new File(path);
 				final String name = file.getName();
 				final String location = file.getParentFile().getName();
