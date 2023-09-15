@@ -1,0 +1,82 @@
+{"properties": [
+  {
+    "name": "client_system_name",
+    "type": "java.lang.String",
+    "description": "A description for 'client_system_name'"
+  },
+  {
+    "name": "sr_address",
+    "type": "java.lang.String",
+    "description": "A description for 'sr_address'"
+  },
+  {
+    "name": "sr_port",
+    "type": "java.lang.String",
+    "description": "A description for 'sr_port'"
+  },
+  {
+    "name": "token.security.filter.enabled",
+    "type": "java.lang.Boolean",
+    "description": "A description for 'token.security.filter.enabled'"
+  },
+  {
+    "name": "container.max_keep_alive_requests",
+    "type": "java.lang.Integer",
+    "description": "A description for 'container.max_keep_alive_requests'"
+  },
+  {
+    "name": "locations",
+    "type": "java.lang.Array",
+    "description": "A description for 'locations'"
+  },
+  {
+    "name": "confidence_threshold",
+    "type": "java.lang.Integer",
+    "description": "A description for 'confidence_threshold'"
+  },
+  {
+    "name": "read_interval",
+    "type": "java.lang.Integer",
+    "description": "A description for 'read_interval'"
+  },
+  {
+    "name": "input_path_prefix",
+    "type": "java.lang.String",
+    "description": "A description for 'input_path_prefix'"
+  },
+  {
+    "name": "working_path_prefix",
+    "type": "java.lang.String",
+    "description": "A description for 'working_path_prefix'"
+  },
+  {
+    "name": "processing_tool_path",
+    "type": "java.lang.String",
+    "description": "A description for 'processing_tool_path'"
+  },
+  {
+    "name": "application_system_name",
+    "type": "java.lang.String",
+    "description": "A description for 'application_system_name'"
+  },
+  {
+    "name": "org.quartz.threadPool.class",
+    "type": "java.lang.String",
+    "description": "A description for 'org.quartz.threadPool.class'"
+  },
+  {
+    "name": "org.quartz.threadPool.threadCount",
+    "type": "java.lang.Integer",
+    "description": "A description for 'org.quartz.threadPool.threadCount'"
+  },
+  {
+    "name": "org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread",
+    "type": "java.lang.String",
+    "description": "A description for 'org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread'"
+  },
+  {
+    "name": "org.quartz.jobStore.class",
+    "type": "java.lang.String",
+    "description": "A description for 'org.quartz.jobStore.class'"
+  }
+]}
