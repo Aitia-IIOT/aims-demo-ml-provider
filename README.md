@@ -7,6 +7,8 @@ This `aims-demo-ml-provider` periodically reads the location specific input fold
 
 ### How to run?
 
+Download the [latest release](https://github.com/Aitia-IIOT/aims-demo-ml-provider/releases) and unzip it.
+
 **Edit the application.properties config file:**
 
 - define the Arrowhead ServiceRegistry address and port
@@ -35,5 +37,5 @@ server.ssl.trust-store-password=yourtrustorepassword
 
 Note: Running Arrowhead ServiceRegistry is required.
 
-`cd path/to/jar` 
+`cd path/to/jar`<br />
 `java -jar aims-demo-ml-provider-<version>.jar`
