@@ -7,7 +7,12 @@ This `aims-demo-ml-provider` periodically reads the location specific input fold
 
 ### How to run?
 
-Download the [latest release](https://github.com/Aitia-IIOT/aims-demo-ml-provider/releases) and unzip it.
+Download the [latest release (both provider and detector archives)](https://github.com/Aitia-IIOT/aims-demo-ml-provider/releases) and unzip them.
+
+**Preparation for using the detector software**
+
+- Detector software requires Python 3.x.
+- Run `pip install -r requirements_no_GPU.txt`.
 
 **Edit the application.properties config file:**
 
@@ -15,7 +20,7 @@ Download the [latest release](https://github.com/Aitia-IIOT/aims-demo-ml-provide
 - define location list 
 - define your input folder
 - define your working folder
-- define the processing tool path
+- define the processing tool path (use the path of the imageProc.bat or imageProc.sh from the detector software's folder)
 
 **Certificates**
 
